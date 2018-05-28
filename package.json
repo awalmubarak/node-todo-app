@@ -8,8 +8,8 @@
     "test": "mocha server/**/*.test.js",
     "watch": "nodemon --exec 'npm test'"
   },
-  "engines":{
-    "node":"8.11.2"
+  "engines": {
+    "node": "8.11.2"
   },
   "author": "",
   "license": "ISC",
@@ -20,7 +20,7 @@
     "mongoose": "^5.1.2"
   },
   "devDependencies": {
-    "expect": "^23.0.1",
+    "expect": "^1.20.2",
     "mocha": "^5.2.0",
     "supertest": "^3.1.0"
   }

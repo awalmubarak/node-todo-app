@@ -12,7 +12,9 @@ const todos = [
   },
  {
    _id: new ObjectID(),
-   title:'test todo two'
+   title:'test todo two',
+   completed:true,
+   completedAt: 333
  }];
 
 beforeEach((done)=>{
@@ -156,6 +158,36 @@ describe('Server', ()=>{
         .end(done);
     });
 
+  });
+
+
+  describe('PATCH /todos/:id', ()=>{
+    it('should update todo', (done)=>{
+      request(app)
+        .patch(`/todos/${todos[0]._id.toHexString()}`)
+        .send({title, completed:true})
+        .expect(200)
+        .expect((res)=>{
+          expect(res.body.todo.title).toBe(title);
+          expect(res.body.todo.completed).toBe(true);
+          expect(res.body.todo.completedAt).toExist();
+          expect(res.body.todo.completedAt).toBeA('number');
+        })
+        .end(done);
+    });
+
+    it('should clear completedAt if todo is not completed', (done)=>{
+      request(app)
+        .patch(`/todos/${todos[1]._id.toHexString()}`)
+        .send({completed:false})
+        .expect(200)
+        .expect((res)=>{
+          expect(res.body.todo.title).toBe(todos[1].title);
+          expect(res.body.todo.completed).toBe(false);
+          expect(res.body.todo.completedAt).toNotExist();
+        })
+        .end(done);
+    });
   });
 
 

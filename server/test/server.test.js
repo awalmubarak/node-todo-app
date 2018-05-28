@@ -112,4 +112,51 @@ describe('Server', ()=>{
 
   });
 
+
+  describe('DELETE /todos/:id', ()=>{
+    it('should remove a todo by id', (done)=>{
+      request(app)
+        .delete(`/todos/${todos[1]._id.toHexString()}`)
+        .expect(200)
+        .expect((res)=>{
+          expect(res.body.todo._id).toBe(todos[1]._id.toHexString());
+
+          Todo.findById(res.body.todo._id).then((todo)=>{
+            expect(todo).toNotExist();
+            done();
+          }).catch((e)=>done(e));
+
+        })
+        .end((err, res)=>{
+          if (err) {
+            done(err);
+          }
+        });
+    });
+
+
+    it('should return 404 if todo not found', (done)=>{
+      request(app)
+        .delete('/todos/' + new ObjectID().toHexString())
+        .expect(404)
+        .expect((res)=>{
+          expect(res.body.empty).toBe(true);
+        })
+        .end(done);
+    });
+
+
+    it('should return 404 for non object IDs',(done)=>{
+      request(app)
+        .delete('/todos/123')
+        .expect(404)
+        .expect((res)=>{
+          expect(res.body.invalid).toBe(true);
+        })
+        .end(done);
+    });
+
+  });
+
+
 });

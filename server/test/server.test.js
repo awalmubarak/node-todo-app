@@ -128,7 +128,7 @@ describe('Server', ()=>{
           expect(res.body.todo._id).toBe(todos[1]._id.toHexString());
 
           Todo.findById(res.body.todo._id).then((todo)=>{
-            expect(todo).toNotExist();
+            expect(todo).toBeFalsy();
             done();
           }).catch((e)=>done(e));
 
@@ -152,7 +152,7 @@ describe('Server', ()=>{
           }
 
           Todo.findById(todos[0]._id.toHexString()).then((todo) => {
-            expect(todo).toExist();
+            expect(todo).toBeTruthy();
             done();
           }).catch((e) => done(e));
         });
@@ -195,8 +195,8 @@ describe('Server', ()=>{
         .expect((res)=>{
           expect(res.body.todo.title).toBe(title);
           expect(res.body.todo.completed).toBe(true);
-          expect(res.body.todo.completedAt).toExist();
-          expect(res.body.todo.completedAt).toBeA('number');
+          expect(res.body.todo.completedAt).toBeTruthy();
+          expect(typeof res.body.todo.completedAt).toBe('number');
         })
         .end(done);
     });
@@ -219,7 +219,7 @@ describe('Server', ()=>{
         .expect((res)=>{
           expect(res.body.todo.title).toBe(todos[1].title);
           expect(res.body.todo.completed).toBe(false);
-          expect(res.body.todo.completedAt).toNotExist();
+          expect(res.body.todo.completedAt).toBeFalsy();
         })
         .end(done);
     });
@@ -262,8 +262,8 @@ describe('Server', ()=>{
         .expect(200)
         .expect((res) => {
           expect(res.body.email).toBe(email);
-          expect(res.headers['x-auth']).toExist();
-          expect(res.body._id).toExist();
+          expect(res.headers['x-auth']).toBeTruthy();
+          expect(res.body._id).toBeTruthy();
         })
         .end(done);
     });
@@ -292,7 +292,7 @@ describe('Server', ()=>{
         .send({email:users[1].email, password:users[1].password})
         .expect(200)
         .expect((res)=>{
-          expect(res.headers['x-auth']).toExist();
+          expect(res.headers['x-auth']).toBeTruthy();
         })
         .end((err, res)=>{
           if (err){
@@ -300,7 +300,7 @@ describe('Server', ()=>{
           }
 
           User.findById(users[1]._id).then((user)=>{
-            expect(user).toExist();
+            expect(user).toBeTruthy();
             expect(user.tokens[1].token).toBe(res.headers['x-auth']);
             expect(user.email).toBe(users[1].email);
             done();
@@ -315,7 +315,7 @@ describe('Server', ()=>{
         .send({ email: users[1].email, password: 'wrongpass' })
         .expect(400)
         .expect((res) => {
-          expect(res.headers['x-auth']).toNotExist();
+          expect(res.headers['x-auth']).toBeFalsy();
         })
         .end((err, res) => {
           if (err) {
@@ -344,7 +344,7 @@ describe('Server', ()=>{
           }
 
           User.findById(users[0]._id).then((user)=>{
-            expect(user).toExist();
+            expect(user).toBeTruthy();
             expect(user.tokens.length).toBe(0);
             done();
           }).catch((e)=>done(e));
